@@ -1,0 +1,12 @@
+matplotlib==3.5.2
+numpy==1.21.5
+numpy==1.21.6
+onnxruntime==1.15.0
+opencv_contrib_python==4.5.5.62
+opencv_python==4.7.0.72
+opencv_python_headless==4.5.5.64
+scikit_learn==1.0.2
+seaborn==0.11.2
+torch==2.0.1
+torchinfo==1.8.0
+torchvision==0.15.2
