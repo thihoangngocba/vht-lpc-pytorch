@@ -16,7 +16,7 @@ def parse_args():
     parser.add_argument('--model_path', default=None, help='ONNX model file path', type=str)
     parser.add_argument('--input_dir', default=False, help='Image directory', type=str)
     parser.add_argument('--input_shape', default=75, help='Input shape', type=int)
-
+    
     args = parser.parse_args()
 
     return args
@@ -50,7 +50,7 @@ def onnx_infer(sess, img):
 
     idx = res.argmax(0)
     
-    return idx
+    return CLASS_DICT[idx]
 
 def main():
     args = parse_args()
@@ -72,7 +72,7 @@ def main():
         img = cv2.imread(path)
         pred = onnx_infer(sess,img)
 
-        print(path, CLASS_DICT[pred], "\n")
+        print(path, pred, "\n")
         #pred_list.append(pred)
 
     del sess # Release memory allocated to ONNX session
