@@ -202,7 +202,10 @@ def main():
         print(f"EPOCH {t+1}\n-------------------------------")
         train(train_loader, model, loss_fn, optimizer)
         val(val_loader, model, loss_fn)
-
+    
+    output_dir = args.output_path.replace((args.output_path).split("/")[-1], "")
+    if os.path.exists(output_dir) == False:
+        os.makedirs(output_dir)
     torch.save(model, args.output_path)
     print("DONE! SAVED MODEL TO {}", args.output_path)
 
