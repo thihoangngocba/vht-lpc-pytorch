@@ -6,6 +6,7 @@ from PIL import Image
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torchinfo
 
 import torchvision
@@ -78,12 +79,12 @@ def parse_args():
     parser.add_argument('--batch_size', default=64, help='batch size', type=int)
     parser.add_argument('--epoch', default=10, help='num epoch', type=int)
     parser.add_argument('--size', default=75, help='input size', type=int)
-    parser.add_argument('--export_onnx', default=False, help='export ONNX model', type=bool)
+    parser.add_argument('--export_onnx', default=True, help='export ONNX model', type=bool)
     args = parser.parse_args()
 
     return args
 
-def train(dataloader, model, loss_fn, optimizer):
+def train(dataloader, model, loss_fn, optimizer, device):
     size = len(dataloader.dataset)
     model.train()
     for batch, data in enumerate(dataloader):
@@ -110,7 +111,7 @@ def train(dataloader, model, loss_fn, optimizer):
             print(f"Train loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
             print(loss_1.item(), loss_2.item())
 
-def val(dataloader, model, loss_fn):
+def val(dataloader, model, loss_fn, device):
     size = len(dataloader.dataset)
     num_batches = len(dataloader)
     model.eval()
@@ -206,8 +207,8 @@ def main():
 
     for t in range(epochs):
         print(f"EPOCH {t+1}\n-------------------------------")
-        train(train_loader, model, loss_fn, optimizer)
-        val(val_loader, model, loss_fn)
+        train(train_loader, model, loss_fn, optimizer, device=device)
+        val(val_loader, model, loss_fn, device=device)
     
     output_dir = args.output_path.replace((args.output_path).split("/")[-1], "")
     if os.path.exists(output_dir) == False:
