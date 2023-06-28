@@ -1,3 +1,4 @@
+import os
 import argparse
 import numpy as np
 
@@ -115,6 +116,8 @@ def main():
         train(train_loader, model, loss_fn, optimizer)
         val(val_loader, model, loss_fn)
 
+    if os.path.exists(args.output_path) == False:
+        os.makedirs(dst)
     torch.save(model, args.output_path)
     print("DONE! SAVED MODEL TO {}", args.output_path)
 
