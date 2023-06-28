@@ -155,9 +155,12 @@ def main():
     )
     print(f"Using {device} device")
 
-    TRAIN_DIR = "/content/lpc_data_v2/train"
-    VAL_DIR = "/content/lpc_data_v2/val"
-    #TEST_DATA_PATH = "/content/lpc_data_v2/test"
+    # Load dataset paths and CSV files
+    train_dir = args.train_path
+    val_dir = args.val_path
+
+    train_csv_path = os.path.join(train_dir, "train.csv")
+    val_csv_path = os.path.join(val_dir, "val.csv")
     
     TRANSFORM_IMG = transforms.Compose([
         transforms.Resize((args.size, args.size)),
@@ -166,9 +169,8 @@ def main():
                              std=[0.229, 0.224, 0.225] )
         ])
 
-    train_data = LPC_Multitask_Dataset(annotations_file="./train.csv",img_dir=TRAIN_DIR, transform=TRANSFORM_IMG)
-    val_data = LPC_Multitask_Dataset(annotations_file="./val.csv", img_dir=VAL_DIR, transform=TRANSFORM_IMG)
-    #test_data = torchvision.datasets.ImageFolder(root=TEST_DATA_PATH, transform=TRANSFORM_IMG)
+    train_data = LPC_Multitask_Dataset(annotations_file=train_csv_path, img_dir=train_dir, transform=TRANSFORM_IMG)
+    val_data = LPC_Multitask_Dataset(annotations_file=val_csv_path, img_dir=val_dir, transform=TRANSFORM_IMG)
     
     # DATALOADER (Input Pipeline)
     train_loader = torch.utils.data.DataLoader(dataset=train_data,
@@ -182,21 +184,17 @@ def main():
                                              shuffle=False,
                                              num_workers=2)
     
-    # test_loader = torch.utils.data.DataLoader(dataset=test_data,
-    #                                           batch_size=args.batch_seize,
-    #                                           shuffle=False)
-
-
     # MODEL: LPC_V1
     model = LPC_Multitask_Net().to(device)
     if args.model_path != None:
         model = torch.load(args.model_path)
     print(torchinfo.summary(model, input_size=(1, 3, args.size, args.size)))
 
+    # Define loss functions for each task
     plate_loss = nn.CrossEntropyLoss()# Includes Softmax
     char_loss = nn.BCELoss() # Doesn't include Softmax
     loss_fn = [plate_loss, char_loss]
-  
+    
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     epochs = args.epoch
 
