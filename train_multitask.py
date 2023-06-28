@@ -17,6 +17,13 @@ from models_multitask import LPC_Multitask_Net
 
 from utils import export_onnx
 
+TRANSFORM_IMG = transforms.Compose([
+    transforms.Resize((75,75)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                         std=[0.229, 0.224, 0.225] )
+    ])
+
 # DATASET
 class LPC_Multitask_Dataset(torch.utils.data.Dataset):
     def __init__(self, annotations_file, img_dir,
@@ -75,7 +82,6 @@ def parse_args():
     args = parser.parse_args()
 
     return args
-
 
 def train(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
