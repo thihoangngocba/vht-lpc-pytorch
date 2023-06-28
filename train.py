@@ -25,7 +25,7 @@ def parse_args():
     parser.add_argument('--batch_size', default=64, help='batch size', type=int)
     parser.add_argument('--epoch', default=10, help='num epoch', type=int)
     parser.add_argument('--size', default=75, help='input size', type=int)
-    parser.add_argument('--export_onnx', default=False, help='export ONNX model', type=bool)
+    parser.add_argument('--export_onnx', default=True, help='export ONNX model', type=bool)
     args = parser.parse_args()
 
     return args
@@ -116,7 +116,7 @@ def main():
         train(train_loader, model, loss_fn, optimizer)
         val(val_loader, model, loss_fn)
 
-    output_dir = (args.output_path).split("/")[:-1]
+    output_dir = args.output_path.replace((args.output_path).split("/")[-1], "")
     if os.path.exists(output_dir) == False:
         os.makedirs(output_dir)
     torch.save(model, args.output_path)
