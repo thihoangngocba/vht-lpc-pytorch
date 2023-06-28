@@ -19,7 +19,7 @@ def parse_args():
     parser.add_argument('--train_path', default="./data_total/train", help='train folder path', type=str)
     parser.add_argument('--val_path', default="./data_total/val", help='val folder path', type=str)
     parser.add_argument('--model_path', default=None, help='model file path', type=str)
-    parser.add_argument('--output_path', default="./models/model.h5", help='output model file path', type=str)
+    parser.add_argument('--output_path', default="./models/model.pth", help='output model file path', type=str)
     parser.add_argument('--lr', default=0.00001, help='learning rate', type=float)
     parser.add_argument('--batch_size', default=64, help='batch size', type=int)
     parser.add_argument('--epoch', default=10, help='num epoch', type=int)
